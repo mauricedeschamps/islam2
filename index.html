@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="東京のハラルレストラン、モスク、イスラム関連情報を提供するガイドサイト">
+    <title>Tokyo Halal Guide</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%232c8a4a%22/><text y=%22.9em%22 font-size=%2290%22>☪️</text></svg>">
+    <link rel="apple-touch-icon" href="icons/icon-192.jpg">
+    <style>
+        /* ---------- グローバル変数 (ダークモードデフォルト) ---------- */
+        :root {
+            --bg-body: #121212;
+            --bg-surface: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --border-color: #333333;
+            --accent-green: #4caf50;
+            --accent-green-dark: #2e7d32;
+            --hover-bg: #2c2c2c;
+            --header-footer-bg: #0a0a0a;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* ライトモード */
+        body.light-mode {
+            --bg-body: #f5f5f5;
+            --bg-surface: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #dddddd;
+            --accent-green: #2e7d32;
+            --accent-green-dark: #1b5e20;
+            --hover-bg: #f0f0f0;
+            --header-footer-bg: #2c8a4a;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: var(--header-footer-bg);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 0.4rem 0.9rem;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        body.light-mode .controls button {
+            background: rgba(0,0,0,0.1);
+            color: #333;
+        }
+
+        .controls button:hover {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .section-card {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow);
+            border-top: 3px solid var(--accent-green);
+        }
+
+        .section-title {
+            color: var(--accent-green);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .link-list {
+            list-style: none;
+        }
+
+        .link-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .link-list a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            padding: 0.7rem;
+            border-radius: 12px;
+            transition: background 0.2s;
+            gap: 1rem;
+        }
+
+        .link-list a:hover {
+            background: var(--hover-bg);
+        }
+
+        .link-list img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f0f0f0;
+        }
+
+        .item-title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .detail-view {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn {
+            background: var(--accent-green);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .detail-img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .detail-desc {
+            margin: 1rem 0;
+            line-height: 1.7;
+        }
+
+        .official-link {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            margin-top: 0.8rem;
+            font-weight: bold;
+        }
+
+        .sponsor-area {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            text-align: center;
+            border: 1px dashed var(--accent-green);
+            font-size: 0.8rem;
+        }
+        .sponsor-area img {
+            max-width: 100%;
+            max-height: 90px;
+            border-radius: 12px;
+        }
+
+        footer {
+            background: var(--header-footer-bg);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .contact-link {
+            color: #81c784;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        [dir="rtl"] .link-list a {
+            flex-direction: row-reverse;
+        }
+        [dir="rtl"] .back-btn svg {
+            transform: rotate(180deg);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header>
+        <h1 data-i18n="title">Tokyo Halal & Muslim Guide</h1>
+        <div class="subtitle" data-i18n="subtitle">Mosques・Halal Restaurants・Useful Apps</div>
+        <div class="controls">
+            <button data-lang="en">🇬🇧 English</button>
+            <button data-lang="ja">🇯🇵 日本語</button>
+            <button data-lang="ar">🇸🇦 العربية</button>
+            <button id="themeToggle">🌓 Dark/Light</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="mainPage">
+            <div class="sponsor-area" id="sponsorTopMain">
+                <a href="#" target="_blank" id="sponsorTopLink">
+                    <img src="" alt="Sponsor" id="sponsorTopImg" style="max-height:80px;">
+                </a>
+                <div style="font-size:0.7rem; margin-top:4px;">📢 スポンサー枠 (画像URLとリンクURLを後で設定)</div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="mosques">Mosques</h2>
+                <ul class="link-list" id="mosques-list"></ul>
+            </div>
+            <div class="sponsor-area" id="sponsorAfterMosque"></div>
+
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="halal-restaurants">Halal Restaurants</h2>
+                <ul class="link-list" id="restaurants-list"></ul>
+            </div>
+            <div class="sponsor-area" id="sponsorAfterRestaurant"></div>
+
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="useful-apps">Useful Apps</h2>
+                <ul class="link-list" id="apps-list"></ul>
+            </div>
+            <div class="sponsor-area" id="sponsorAfterApps"></div>
+
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="travel-info">Travel Information</h2>
+                <ul class="link-list" id="travel-list"></ul>
+            </div>
+            <div class="sponsor-area" id="sponsorBottomMain">
+                <a href="#" target="_blank" id="sponsorBottomLink">
+                    <img src="" alt="Sponsor" id="sponsorBottomImg" style="max-height:80px;">
+                </a>
+                <div style="font-size:0.7rem; margin-top:4px;">📢 下部スポンサー枠</div>
+            </div>
+        </div>
+
+        <div id="detailPage" class="hidden">
+            <button class="back-btn" id="backBtn">← <span data-i18n="back">Back</span></button>
+            <div class="detail-view" id="detailContent"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p data-i18n="footer-text">© 2025 Tokyo Halal Guide - Useful Links for Muslims</p>
+        <a href="mailto:mementomorikatsu@gmail.com" class="contact-link" data-i18n="contact">Contact us<br>mementomorikatsu@gmail.com</a>
+    </footer>
+
+    <script>
+        // ---------- データ定義 ----------
+        const itemsData = {
+            "tokyo-camii": {
+                name: { ja: "東京ジャーミイ（代々木上原）", en: "Tokyo Camii (Yoyogi-Uehara)", ar: "مسجد طوكيو (يويوغي-أويهارا)" },
+                desc: { ja: "東京最大級のモスク。美しいオスマン建築で、レストランやイスラム文化センターも併設。", en: "One of Tokyo's largest mosques with beautiful Ottoman architecture, restaurant and Islamic cultural center.", ar: "أحد أكبر مساجد طوكيو، يتميز بهندسة عثمانية جميلة، ويضم مطعمًا ومركزًا ثقافيًا إسلاميًا." },
+                img: "https://tokyocamii.org/wp-content/themes/tokyo_camii/images/ogp.jpg",
+                officialUrl: "https://tokyocamii.org/"
+            },
+            "ohtsuka-masjid": {
+                name: { ja: "日本イスラーム文化センター マスジド大塚", en: "Islamic Center Japan - Masjid Ohtsuka", ar: "المركز الإسلامي الياباني - مسجد أوتسوكا" },
+                desc: { ja: "地域に根ざしたモスク。礼拝スペースの他、学習教室も開催。", en: "Community-focused mosque offering prayer space and Islamic learning classes.", ar: "مسجد يركز على المجتمع المحلي، يوفر مكانًا للصلاة وفصولًا لتعليم الإسلام." },
+                img: "https://tabunka.tokyo-tsunagari.or.jp/assets/thumbnails/thumb-organization-960xauto-1088-photo.png",
+                officialUrl: "https://tabunka.tokyo-tsunagari.or.jp/organization/dantai/Masjid.html"
+            },
+            "japan-halal-list": {
+                name: { ja: "ジャパン・ハラール・ファンデーション認証店一覧", en: "Japan Halal Foundation Certified Stores", ar: "قائمة المطاعم المعتمدة من مؤسسة الحلال اليابانية" },
+                desc: { ja: "JHFが認証したハラルレストランや食品店を検索できます。", en: "Search for JHF-certified halal restaurants and food shops.", ar: "ابحث عن المطاعم ومتاجر الطعام الحاصلة على شهادة الحلال اليابانية." },
+                img: "https://japanhalal.or.jp/wp-content/themes/jhf/assets/images/common/logo.svg",
+                officialUrl: "https://japanhalal.or.jp/shop"
+            },
+            "halal-gourmet-japan": {
+                name: { ja: "ハラルグルメジャパン（検索サイト）", en: "Halal Gourmet Japan (Search Site)", ar: "حلال جورمي اليابان (موقع البحث)" },
+                desc: { ja: "日本全国のハラル情報を集めたポータルサイト。口コミや写真も豊富。", en: "Portal site collecting halal info across Japan with reviews and photos.", ar: "بوابة تضم معلومات الحلال في جميع أنحاء اليابان مع تقييمات وصور." },
+                img: "https://jhba.jp/wp/wp-content/themes/jhba/img/halal01_6.png",
+                officialUrl: "https://www.halalgourmet.jp/"
+            },
+            "halal-gourmet-app": {
+                name: { ja: "ハラルグルメジャパン（アプリ版）", en: "Halal Gourmet Japan (App)", ar: "تطبيق حلال جورمي اليابان" },
+                desc: { ja: "スマホで簡単に近くのハラルレストランを検索できるアプリ。", en: "App to easily find nearby halal restaurants on your smartphone.", ar: "تطبيق للعثور بسهولة على مطاعم الحلال القريبة على هاتفك الذكي." },
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcLRcnALiUImAmH7dv4G-JrJ4T32K2j0zTuOhqdZQjOd2_PTfKDL4cjrzPXZB5-VUfzes&usqp=CAU",
+                officialUrl: "https://halalmedia.jp/ja/restaurant-finding-app-for-muslims-halal-gourmet-japan/"
+            },
+            "qibla-finder": {
+                name: { ja: "キブラ方向検索アプリ", en: "Qibla Finder App", ar: "تطبيق تحديد اتجاه القبلة" },
+                desc: { ja: "GPSであなたの現在地からキブラ方向を表示。", en: "Shows Qibla direction from your current location using GPS.", ar: "يعرض اتجاه القبلة من موقعك الحالي باستخدام GPS." },
+                img: "https://png.pngtree.com/png-vector/20230721/ourlarge/pngtree-qibla-direction-sign-vector-png-image_8322580.png",
+                officialUrl: "https://www.qibla-finder.com/"
+            },
+            "gotokyo-guide": {
+                name: { ja: "東京イスラム観光ガイド（公式）", en: "Tokyo Islamic Guide (Official)", ar: "دليل طوكيو الإسلامي (رسمي)" },
+                desc: { ja: "東京都公式のムスリム旅行者向けガイド。礼拝所やハラル食情報。", en: "Official Tokyo guide for Muslim travelers: prayer spaces, halal food.", ar: "دليل طوكيو الرسمي للمسافرين المسلمين: أماكن الصلاة والطعام الحلال." },
+                img: "https://www.gotokyo.org/en/plan/tokyo-islamic-guide/images/ogp.png",
+                officialUrl: "https://www.gotokyo.org/en/plan/tokyo-islamic-guide/index.html"
+            },
+            "muslim-travel-japan": {
+                name: { ja: "Muslim Travel Japan", en: "Muslim Travel Japan", ar: "مسلم ترافل جابان" },
+                desc: { ja: "日本各地のムスリムフレンドリーな施設を紹介する旅行サイト。", en: "Travel site introducing Muslim-friendly facilities across Japan.", ar: "موقع سفر يقدم مرافق صديقة للمسلمين في جميع أنحاء اليابان." },
+                img: "https://cdn.peraichi.com/userData/45a1e8fe-ed96-4f52-9b16-b82f8c4312cf/img/6690873d2f084/original.jpg",
+                officialUrl: "https://muslimtraveljapan.com/"
+            }
+        };
+
+        const categoryKeys = {
+            mosques: ["tokyo-camii", "ohtsuka-masjid"],
+            restaurants: ["japan-halal-list", "halal-gourmet-japan"],
+            apps: ["halal-gourmet-app", "qibla-finder"],
+            travel: ["gotokyo-guide", "muslim-travel-japan"]
+        };
+
+        let currentLang = "en";
+        let currentTheme = "dark";
+
+        const translations = {
+            en: {
+                title: "Tokyo Halal & Muslim Guide",
+                subtitle: "Mosques・Halal Restaurants・Useful Apps",
+                mosques: "Mosques",
+                "halal-restaurants": "Halal Restaurants",
+                "useful-apps": "Useful Apps",
+                "travel-info": "Travel Information",
+                "footer-text": "© 2025 Tokyo Halal Guide - Useful Links for Muslims",
+                contact: "Contact us<br>mementomorikatsu@gmail.com",
+                back: "Back"
+            },
+            ja: {
+                title: "東京ハラル・イスラム情報ガイド",
+                subtitle: "モスク・ハラル店・便利アプリへのリンク集",
+                mosques: "モスク",
+                "halal-restaurants": "ハラルレストラン",
+                "useful-apps": "便利アプリ",
+                "travel-info": "観光情報",
+                "footer-text": "© 2025 東京ハラル情報ガイド - イスラム教徒のための便利リンク集",
+                contact: "連絡先<br>mementomorikatsu@gmail.com",
+                back: "戻る"
+            },
+            ar: {
+                title: "دليل الحلال والمسلمين في طوكيو",
+                subtitle: "المساجد · مطاعم حلال · تطبيقات مفيدة",
+                mosques: "المساجد",
+                "halal-restaurants": "مطاعم حلال",
+                "useful-apps": "تطبيقات مفيدة",
+                "travel-info": "معلومات سياحية",
+                "footer-text": "© 2025 دليل الحلال في طوكيو - روابط مفيدة للمسلمين",
+                contact: "اتصل بنا<br>mementomorikatsu@gmail.com",
+                back: "رجوع"
+            }
+        };
+
+        const mainPageDiv = document.getElementById("mainPage");
+        const detailPageDiv = document.getElementById("detailPage");
+        const detailContent = document.getElementById("detailContent");
+        const backBtn = document.getElementById("backBtn");
+
+        function renderMainPage() {
+            for (const [cat, keys] of Object.entries(categoryKeys)) {
+                const container = document.getElementById(cat + "-list");
+                if (!container) continue;
+                container.innerHTML = "";
+                keys.forEach(key => {
+                    const item = itemsData[key];
+                    if (!item) return;
+                    const li = document.createElement("li");
+                    const a = document.createElement("a");
+                    a.href = "#";
+                    a.setAttribute("data-key", key);
+                    const img = document.createElement("img");
+                    img.src = item.img;
+                    img.alt = item.name[currentLang];
+                    img.onerror = () => { img.src = "https://placehold.co/400x200?text=Halal+Guide"; };
+                    const span = document.createElement("span");
+                    span.className = "item-title";
+                    span.textContent = item.name[currentLang];
+                    a.appendChild(img);
+                    a.appendChild(span);
+                    a.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        showDetail(key);
+                    });
+                    li.appendChild(a);
+                    container.appendChild(li);
+                });
+            }
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[currentLang][key]) {
+                    if (key === "contact") el.innerHTML = translations[currentLang][key];
+                    else el.innerText = translations[currentLang][key];
+                }
+            });
+            document.querySelector("h1").innerText = translations[currentLang].title;
+            document.querySelector(".subtitle").innerText = translations[currentLang].subtitle;
+        }
+
+        function showDetail(key) {
+            const item = itemsData[key];
+            if (!item) return;
+            const name = item.name[currentLang];
+            const desc = item.desc[currentLang];
+            const imgUrl = item.img;
+            const officialUrl = item.officialUrl;
+            detailContent.innerHTML = `
+                <img src="${imgUrl}" alt="${name}" class="detail-img" onerror="this.src='https://placehold.co/600x300?text=Image+Not+Found'">
+                <h2>${name}</h2>
+                <p class="detail-desc">${desc}</p>
+                <a href="${officialUrl}" target="_blank" rel="noopener noreferrer" class="official-link" data-i18n-dyn="visit">${currentLang === 'ja' ? '公式サイトへ' : (currentLang === 'ar' ? 'الموقع الرسمي' : 'Official Website')} ↗</a>
+            `;
+            mainPageDiv.classList.add("hidden");
+            detailPageDiv.classList.remove("hidden");
+            window._currentDetailKey = key;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function backToMain() {
+            detailPageDiv.classList.add("hidden");
+            mainPageDiv.classList.remove("hidden");
+            renderMainPage();
+            window.scrollTo({ top: 0 });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            renderMainPage();
+            if (!detailPageDiv.classList.contains("hidden") && window._currentDetailKey) {
+                showDetail(window._currentDetailKey);
+            }
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains("light-mode")) {
+                document.body.classList.remove("light-mode");
+                document.body.classList.add("dark-mode");
+                currentTheme = "dark";
+            } else {
+                document.body.classList.remove("dark-mode");
+                document.body.classList.add("light-mode");
+                currentTheme = "light";
+            }
+            const themeColor = currentTheme === "dark" ? "#1e1e1e" : "#2c8a4a";
+            document.querySelector('meta[name="theme-color"]').setAttribute("content", themeColor);
+        }
+
+        function setupSponsors() {
+            // ★ ここにスポンサーの画像URLとリンクURLを記入してください ★
+            const topSponsorImgUrl = "";   // 例: "https://example.com/banner.jpg"
+            const topSponsorLink = "";     // 例: "https://sponsor-site.com"
+            const afterMosqueImg = "";
+            const afterMosqueLink = "";
+            const afterRestImg = "";
+            const afterRestLink = "";
+            const afterAppsImg = "";
+            const afterAppsLink = "";
+            const bottomSponsorImg = "";
+            const bottomSponsorLink = "";
+
+            function applySponsor(divId, imgId, linkId, imgUrl, linkUrl) {
+                const container = document.getElementById(divId);
+                if (!container) return;
+                if (imgUrl && linkUrl) {
+                    const imgElem = document.getElementById(imgId);
+                    const linkElem = document.getElementById(linkId);
+                    if (imgElem) imgElem.src = imgUrl;
+                    if (linkElem) linkElem.href = linkUrl;
+                    container.style.display = "block";
+                } else {
+                    container.style.display = "none";
+                }
+            }
+            applySponsor("sponsorTopMain", "sponsorTopImg", "sponsorTopLink", topSponsorImgUrl, topSponsorLink);
+            applySponsor("sponsorBottomMain", "sponsorBottomImg", "sponsorBottomLink", bottomSponsorImg, bottomSponsorLink);
+
+            function addCustomSponsor(containerId, imgUrl, linkUrl) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                if (imgUrl && linkUrl) {
+                    container.innerHTML = `<a href="${linkUrl}" target="_blank"><img src="${imgUrl}" alt="sponsor" style="max-height:80px;"></a><div style="font-size:0.7rem; margin-top:4px;">📢 スポンサーリンク</div>`;
+                    container.style.display = "block";
+                } else {
+                    container.style.display = "none";
+                }
+            }
+            addCustomSponsor("sponsorAfterMosque", afterMosqueImg, afterMosqueLink);
+            addCustomSponsor("sponsorAfterRestaurant", afterRestImg, afterRestLink);
+            addCustomSponsor("sponsorAfterApps", afterAppsImg, afterAppsLink);
+        }
+
+        function initEvents() {
+            document.querySelectorAll("[data-lang]").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    setLanguage(btn.getAttribute("data-lang"));
+                });
+            });
+            document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+            backBtn.addEventListener("click", backToMain);
+        }
+
+        function init() {
+            document.body.classList.add("dark-mode");
+            setupSponsors();
+            renderMainPage();
+            initEvents();
+            setLanguage("en");
+            // サービスワーカーの登録 (PWA)
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('Service Worker registered', reg);
+                }).catch(err => {
+                    console.error('SW registration failed', err);
+                });
+            }
+        }
+        init();
+    </script>
+</body>
+</html>

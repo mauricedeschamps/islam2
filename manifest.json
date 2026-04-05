@@ -1,0 +1,25 @@
+{
+  "name": "Tokyo Halal Guide",
+  "short_name": "Halal Tokyo",
+  "description": "東京のハラルレストラン、モスク、イスラム関連情報ガイド",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#1e1e1e",
+  "background_color": "#121212",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "icons/icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
